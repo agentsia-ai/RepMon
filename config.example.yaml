@@ -1,0 +1,68 @@
+# ============================================================
+# RepMon — Configuration Template
+# Copy to config.yaml and customize. Never commit secrets;
+# use .env for API keys and passwords.
+# ============================================================
+
+operator_name: ""
+operator_email: ""
+
+business:
+  name: ""
+  timezone: "America/Chicago"
+  domain: ""
+
+monitoring:
+  check_interval_hours: 24
+  dmarc_report_inbox: ""
+  sentiment_alert_threshold: 0.3
+  blocklist_alert_on_any: true
+  score_drop_alert_threshold: 10
+
+reputation:
+  sources:
+    google_business: true
+    yelp: true
+    trustpilot: false
+    rss_feeds: []
+    reddit_keywords: []
+    twitter_keywords: []
+
+domain_health:
+  dkim_selectors: ["google"]
+  blocklists:
+    use_defaults: true
+    additional: []
+  warmup:
+    default_start_volume: 20
+    ramp_days: 30
+
+outreach:
+  require_approval: true
+  smtp_host: ""
+  smtp_port: 587
+  smtp_starttls: true
+  smtp_username: ""
+  from_address: ""
+
+cross_engine:
+  leadgen_db: null
+  propgen_db: null
+
+ai:
+  model: "claude-sonnet-4-20250514"
+  temperature: 0.3
+  max_tokens: 1000
+  min_classification_confidence: 0.7
+  min_warmup_confidence: 0.8
+
+scoring:
+  deliverability_weight: 0.5
+  reputation_weight: 0.5
+
+database:
+  path: "./data/repmon.db"
+
+scheduler:
+  timezone: "America/Chicago"
+  run_checks_at: "06:00"
