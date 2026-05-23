@@ -114,10 +114,9 @@ class APIKeys(BaseModel):
     model_config = ConfigDict(populate_by_name=True)
 
     anthropic: str = Field(default="", alias="ANTHROPIC_API_KEY")
-    google_oauth_client_id: str = Field(default="", alias="GOOGLE_OAUTH_CLIENT_ID")
-    google_oauth_client_secret: str = Field(default="", alias="GOOGLE_OAUTH_CLIENT_SECRET")
+    google_credentials_path: str = Field(default="", alias="GOOGLE_CREDENTIALS_PATH")
     google_oauth_token_path: str = Field(
-        default="./.google_business_token.json", alias="GOOGLE_OAUTH_TOKEN_PATH"
+        default="./.google_oauth_token.json", alias="GOOGLE_OAUTH_TOKEN_PATH"
     )
     yelp_api_key: str = Field(default="", alias="YELP_API_KEY")
     trustpilot_api_key: str = Field(default="", alias="TRUSTPILOT_API_KEY")

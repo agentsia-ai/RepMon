@@ -25,6 +25,8 @@ htmlcov/
 venv/
 .env
 .envrc
+.google_oauth_token.json
+credentials.json
 .mypy_cache/
 .ruff_cache/
 .idea/

@@ -30,6 +30,12 @@ dependencies = [
     "dnspython>=2.6.0",
     "lxml>=5.0.0",
     "feedparser>=6.0.0",
+
+    # Google Business Profile API (OAuth + reviews)
+    "google-api-python-client>=2.130.0",
+    "google-auth>=2.29.0",
+    "google-auth-oauthlib>=1.2.0",
+    "google-auth-httplib2>=0.2.0",
 ]
 
 [project.optional-dependencies]

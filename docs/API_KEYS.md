@@ -5,7 +5,7 @@ Secrets live in `.env` only (never in `config.yaml`).
 | Integration | Env vars | Notes |
 |-------------|----------|--------|
 | **Anthropic** | `ANTHROPIC_API_KEY` | Required for classifier, drafter, advisor. |
-| **Google Business Profile** | `GOOGLE_OAUTH_CLIENT_ID`, `GOOGLE_OAUTH_CLIENT_SECRET`, token path | OAuth2; engine stubs fetch/post until you wire the Locations/Reviews API. |
+| **Google Business Profile** | `GOOGLE_CREDENTIALS_PATH`, `GOOGLE_OAUTH_TOKEN_PATH` | OAuth2 Desktop app JSON + cached refresh token; fetches reviews and posts approved replies. |
 | **Yelp Fusion** | `YELP_API_KEY` | **Read-only** — Yelp does not expose public reply via this API; use RepMon to draft, then reply in Yelp UI. |
 | **Trustpilot** | `TRUSTPILOT_API_KEY`, `TRUSTPILOT_BUSINESS_UNIT_ID` | Connector stub — fill when enabling. |
 | **Reddit** | `REDDIT_CLIENT_ID`, `REDDIT_CLIENT_SECRET`, `REDDIT_USER_AGENT` | OAuth app; connector stub. |
