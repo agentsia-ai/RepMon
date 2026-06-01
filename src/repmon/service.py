@@ -8,7 +8,7 @@ from typing import Any, Optional
 from repmon import alerting
 from repmon._time import now_utc
 from repmon.ai.drafter import ResponseDrafter
-from repmon.config.loader import APIKeys, RepMonConfig
+from repmon.config.loader import APIKeys, RepMonConfig, format_review_signature
 from repmon.crm.database import RepMonDatabase
 from repmon.cross_engine import fetch_lead_domains, fetch_propgen_domains
 from repmon.models import (
@@ -31,6 +31,18 @@ from repmon.sources.dmarc_parser import ingest_report_file
 from repmon.sources.google_business import GoogleBusinessSource
 
 logger = logging.getLogger(__name__)
+
+
+def append_operator_signature(config: RepMonConfig, body: str) -> str:
+    """Append operator sign-off to a customer-facing draft; never agent_name."""
+    text = body.strip()
+    sig = format_review_signature(config)
+    if not sig:
+        return text
+    op = (config.operator_name or "").strip()
+    if op and op in text:
+        return text
+    return f"{text}{sig}"
 
 
 async def resolve_domain_id(db: RepMonDatabase, token: str) -> Optional[MonitoredDomain]:
@@ -117,7 +129,7 @@ async def draft_response_for_mention(
     else:
         subj, body = await drafter.draft_mention_response(dom, m)
     text = body if not subj else f"{subj}\n\n{body}"
-    m.draft_response = text
+    m.draft_response = append_operator_signature(config, text)
     m.response_status = ResponseStatus.DRAFTED
     await db.upsert_mention(m)
     return m
@@ -134,6 +146,10 @@ async def publish_response(
     mention_id: str,
     approval_token: str,
 ) -> bool:
+    # RepMon does not send outbound email — only stages drafts and publishes
+    # operator-approved replies to platforms (e.g. Google Business) after approval.
+    if config.outreach.auto_send:
+        raise ValueError("outreach.auto_send must remain false — publishing requires human approval")
     if config.outreach.require_approval and not approval_token.strip():
         raise ValueError("approval_token required when outreach.require_approval is true")
     m = await db.get_mention(mention_id)

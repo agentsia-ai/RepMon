@@ -69,6 +69,7 @@ class DomainHealthConfig(BaseModel):
 
 class OutreachConfig(BaseModel):
     require_approval: bool = True
+    auto_send: bool = False
     smtp_host: str = ""
     smtp_port: int = 587
     smtp_starttls: bool = True
@@ -96,8 +97,12 @@ class ScoringConfig(BaseModel):
 
 
 class RepMonConfig(BaseModel):
+    client_name: str = ""
     operator_name: str = ""
+    operator_title: str = ""
     operator_email: str = ""
+    agent_name: str = ""
+    agent_email: str = ""
     business: BusinessConfig = BusinessConfig()
     monitoring: MonitoringConfig = MonitoringConfig()
     reputation: ReputationConfig = ReputationConfig()
@@ -145,6 +150,27 @@ class APIKeys(BaseModel):
                 continue
             values[alias] = raw
         return cls(**values)
+
+
+def display_agent_name(config: RepMonConfig) -> str:
+    """Agent-facing label for logs and MCP metadata.
+
+    Productized deployments (e.g. agentsia-core) set config.agent_name.
+    Standalone RepMon installs fall back to the engine name.
+    """
+    name = (config.agent_name or "").strip()
+    return name or "repmon"
+
+
+def format_review_signature(config: RepMonConfig) -> str:
+    """Customer-facing sign-off for review replies (operator, never agent persona)."""
+    name = (config.operator_name or "").strip()
+    if not name:
+        return ""
+    title = (config.operator_title or "").strip()
+    if title:
+        return f"\n\n— {name}, {title}"
+    return f"\n\n— {name}"
 
 
 def load_config(config_path: str | Path | None = None) -> RepMonConfig:
