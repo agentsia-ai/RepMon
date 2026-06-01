@@ -4,8 +4,14 @@
 # use .env for API keys and passwords.
 # ============================================================
 
-operator_name: ""
-operator_email: ""
+# operator_* — human who approves and posts review replies (first-person voice).
+# agent_* — persona for MCP/logs only; never in customer-facing draft text.
+client_name: ""
+operator_name: "Pat Operator"
+operator_title: "Owner"
+operator_email: "ops@example.com"
+agent_name: "Reputation Assistant"
+agent_email: ""
 
 business:
   name: ""
@@ -39,6 +45,8 @@ domain_health:
 
 outreach:
   require_approval: true
+  auto_send: false
+  # SMTP fields are unused for outbound mail in v0.1 — drafts only; publish via APIs.
   smtp_host: ""
   smtp_port: 587
   smtp_starttls: true

@@ -14,7 +14,9 @@ from repmon.models import Mention, MonitoredDomain
 logger = logging.getLogger(__name__)
 
 
-DEFAULT_SYSTEM_PROMPT = """You draft professional, empathetic public responses for a local business operator.
+DEFAULT_SYSTEM_PROMPT = """You draft professional, empathetic public responses for a local business owner.
+Write in first person as the owner (use the operator name from context). Never use an AI assistant,
+bot, or agent persona name in customer-facing text.
 Every response is reviewed before publishing — do not claim refunds or compensation unless explicitly stated in context.
 
 Return ONLY JSON:
@@ -59,20 +61,27 @@ class ResponseDrafter:
     async def draft_review_response(
         self, domain: MonitoredDomain, mention: Mention
     ) -> tuple[str, str]:
+        owner = (self.config.operator_name or "the business owner").strip()
         user = f"""Business: {domain.display_name or domain.domain}
-Operator: {self.config.operator_name}
+Business owner (first-person voice): {owner}
 Review from {mention.author or 'anonymous'} (rating {mention.rating!s}):
 {mention.content}
+
+Draft a public reply in first person as {owner}. Do not mention any AI agent or assistant by name.
 """
         return await self._call(user)
 
     async def draft_mention_response(
         self, domain: MonitoredDomain, mention: Mention
     ) -> tuple[str, str]:
+        owner = (self.config.operator_name or "the business owner").strip()
         user = f"""Business: {domain.display_name or domain.domain}
+Business owner (first-person voice): {owner}
 Social mention ({mention.source.value}):
 {mention.content}
 URL: {mention.url}
+
+Draft a public reply in first person as {owner}. Do not mention any AI agent or assistant by name.
 """
         return await self._call(user)
 

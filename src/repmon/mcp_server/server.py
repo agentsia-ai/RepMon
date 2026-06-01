@@ -15,7 +15,7 @@ from mcp.types import TextContent, Tool
 from repmon.ai.advisor import DomainAdvisor
 from repmon.ai.classifier import MentionClassifier
 from repmon.ai.drafter import ResponseDrafter
-from repmon.config.loader import load_api_keys, load_config
+from repmon.config.loader import display_agent_name, load_api_keys, load_config
 from repmon.crm.database import RepMonDatabase
 from repmon.models import MentionSource, Sentiment, ResponseStatus
 from repmon.scoring.engine import (
@@ -286,7 +286,7 @@ async def call_tool(name: str, arguments: dict) -> list[TextContent]:
 
         if name == "get_dashboard":
             data = await dashboard_summary(db)
-            return _json({"domains": data})
+            return _json({"agent": display_agent_name(config), "domains": data})
 
         if name == "add_domain":
             dom = await add_domain(db, config, arguments["domain"])
@@ -524,7 +524,8 @@ async def main(
     await db.init()
 
     logging.basicConfig(level=logging.INFO, stream=sys.stderr)
-    logger.info("Starting RepMon MCP server...")
+    agent_label = display_agent_name(config)
+    logger.info("Starting RepMon MCP server (agent=%s)...", agent_label)
     async with stdio_server() as (read_stream, write_stream):
         await app.run(read_stream, write_stream, app.create_initialization_options())
 

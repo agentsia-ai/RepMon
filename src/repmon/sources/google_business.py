@@ -7,9 +7,10 @@ for consent. The resulting token is persisted to `keys.google_oauth_token_path`
 
 Scope: `business.manage` — read locations/reviews and post owner replies.
 
-Reply publishing is gated by RepMon's service layer: `draft_response` stages,
-`approve_response` approves, and `publish_response` calls `publish_reply`
-only after a valid approval token is presented.
+Reply publishing is gated by RepMon's service layer: `draft_response` stages
+draft-only text (no email send), `approve_response` approves, and `publish_response`
+calls `publish_reply` only after a valid approval token is presented.
+RepMon never auto-sends email; platform posts require explicit operator approval.
 """
 
 from __future__ import annotations

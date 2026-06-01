@@ -15,7 +15,10 @@ logger = logging.getLogger(__name__)
 
 
 async def poll_dmarc_inbox_stub(config: RepMonConfig) -> None:
-    """No-op placeholder — wire aiosmtplib/IMAP in your deployment."""
+    """No-op placeholder — wire aiosmtplib/IMAP in your deployment.
+
+    Inbound DMARC reports only; RepMon does not send outbound email from this path.
+    """
     if not config.monitoring.dmarc_report_inbox:
         return
     logger.debug(

@@ -12,7 +12,7 @@ from rich.console import Console
 from rich.table import Table
 
 from repmon import __version__
-from repmon.config.loader import load_api_keys, load_config
+from repmon.config.loader import display_agent_name, load_api_keys, load_config
 from repmon.crm.database import RepMonDatabase
 from repmon.scoring.engine import dmarc_reports_in_window
 from repmon.service import (
@@ -54,12 +54,12 @@ def pipeline() -> None:
     """Composite health dashboard for all domains."""
 
     async def _run() -> None:
-        _, _, db = await _boot()
+        cfg, _, db = await _boot()
         rows = await dashboard_summary(db)
         if not rows:
             console.print("[yellow]No monitored domains. Use add-domain.[/yellow]")
             return
-        table = Table(title="RepMon dashboard")
+        table = Table(title=f"RepMon Dashboard ({display_agent_name(cfg)})")
         table.add_column("Domain")
         table.add_column("Composite")
         table.add_column("Reputation")
