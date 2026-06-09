@@ -15,5 +15,5 @@ class RedditSource(MentionSourceConnector):
     name = "reddit"
 
     async def fetch_recent(self, domain: MonitoredDomain, limit: int = 25) -> list[Mention]:
-        logger.debug("Reddit connector stub — configure OAuth in .env to enable.")
+        logger.debug("Reddit connector stub — configure OAuth via environment variables (Doppler in production, or a local .env in development) to enable.")
         return []
