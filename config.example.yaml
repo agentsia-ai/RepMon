@@ -69,7 +69,7 @@ scoring:
   reputation_weight: 0.5
 
 database:
-  path: "./data/repmon.db"
+  sqlite_path: "./data/repmon.db"
 
 scheduler:
   timezone: "America/Chicago"

@@ -13,7 +13,7 @@
    cp .env.example .env
    ```
 
-   Fill `operator_email`, `business.domain`, `database.path`, and optional `cross_engine.*` paths to sibling LeadGen / PropGen SQLite files.
+   Fill `operator_email`, `business.domain`, `database.sqlite_path`, and optional `cross_engine.*` paths to sibling LeadGen / PropGen SQLite files.
 
 3. **Initialize**
 

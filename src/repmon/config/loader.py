@@ -8,7 +8,7 @@ from typing import Any, Optional
 
 import yaml
 from dotenv import load_dotenv
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import AliasChoices, BaseModel, ConfigDict, Field
 
 load_dotenv()
 
@@ -83,7 +83,12 @@ class CrossEngineConfig(BaseModel):
 
 
 class DatabaseConfig(BaseModel):
-    path: str = "./data/repmon.db"
+    # Canonical key is `sqlite_path` (consistent with the other engines). The
+    # `path` alias keeps older RepMon configs that used `database.path` working.
+    sqlite_path: str = Field(
+        default="./data/repmon.db",
+        validation_alias=AliasChoices("sqlite_path", "path"),
+    )
 
 
 class SchedulerConfig(BaseModel):
@@ -182,7 +187,18 @@ def load_config(config_path: str | Path | None = None) -> RepMonConfig:
         )
     with open(path, encoding="utf-8") as f:
         raw = yaml.safe_load(f) or {}
-    return RepMonConfig(**raw)
+    config = RepMonConfig(**raw)
+
+    # Anchor a relative SQLite path to the config file's directory rather than
+    # the process working directory, so the DB lives in a stable location no
+    # matter where the engine is launched from (Claude Desktop with no cwd, a
+    # manual run from a parent repo, ...). An already-absolute path — e.g. one
+    # the agentsia-core launcher pre-resolved — is left untouched.
+    db_path = Path(config.database.sqlite_path)
+    if not db_path.is_absolute():
+        config.database.sqlite_path = str((path.resolve().parent / db_path).resolve())
+
+    return config
 
 
 def load_api_keys() -> APIKeys:
