@@ -520,7 +520,7 @@ async def main(
 
     config = load_config()
     keys = load_api_keys()
-    db = RepMonDatabase(config.database.path)
+    db = RepMonDatabase(config.database.sqlite_path)
     await db.init()
 
     logging.basicConfig(level=logging.INFO, stream=sys.stderr)

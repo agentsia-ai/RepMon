@@ -36,7 +36,7 @@ def _log(debug: bool) -> None:
 async def _boot() -> tuple:
     config = load_config()
     keys = load_api_keys()
-    db = RepMonDatabase(config.database.path)
+    db = RepMonDatabase(config.database.sqlite_path)
     await db.init()
     return config, keys, db
 
